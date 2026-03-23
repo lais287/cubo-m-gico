@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cubo 3D Maciço - Espaçamento Ideal</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #111;
+            overflow: hidden;
+            perspective: 1200px;
+        }
+
+        .scene {
+            width: 220px;
+            height: 220px;
+            transform-style: preserve-3d;
+        }
+
+        #cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+
+        .small-cube {
+            position: absolute;
+            width: 60px; 
+            height: 60px;
+            transform-style: preserve-3d;
+            top: 50%;
+            left: 50%;
+            margin-top: -30px;
+            margin-left: -30px;
+        }
+
+        .face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border: 1px solid #d0d0d0;
+            box-sizing: border-box;
+            /* Sombra interna para dar profundidade individual a cada peça */
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.08);
+        }
+
+        /* Definição do formato do cubinho */
+        .front  { transform: rotateY(0deg) translateZ(30px); }
+        .back   { transform: rotateY(180deg) translateZ(30px); }
+        .right  { transform: rotateY(90deg) translateZ(30px); }
+        .left   { transform: rotateY(-90deg) translateZ(30px); }
+        .top    { transform: rotateX(90deg) translateZ(30px); }
+        .bottom { transform: rotateX(-90deg) translateZ(30px); }
+
+    </style>
+</head>
+<body>
+
+    <div class="scene">
+        <div id="cube"></div>
+    </div>
+
+    <script>
+        const cubeContainer = document.getElementById('cube');
+        // gap 75: Equilíbrio entre oco e colado
+        const gap = 75; 
+
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                for (let z = -1; z <= 1; z++) {
+                    const smallCube = document.createElement('div');
+                    smallCube.className = 'small-cube';
+                    
+                    const posX = x * gap;
+                    const posY = y * gap;
+                    const posZ = z * gap;
+                    
+                    smallCube.style.transform = `translate3d(${posX}px, ${posY}px, ${posZ}px)`;
+
+                    const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+                    faces.forEach(f => {
+                        const faceDiv = document.createElement('div');
+                        faceDiv.className = `face ${f}`;
+                        smallCube.appendChild(faceDiv);
+                    });
+
+                    cubeContainer.appendChild(smallCube);
+                }
+            }
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            const xDeg = (window.innerHeight / 2 - e.pageY) / 4;
+            const yDeg = (e.pageX - window.innerWidth / 2) / 4;
+            cubeContainer.style.transform = `rotateX(${xDeg}deg) rotateY(${yDeg}deg)`;
+        });
+    </script>
+</body>
+</html>
